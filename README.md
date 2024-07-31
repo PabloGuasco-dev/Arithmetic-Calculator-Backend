@@ -17,15 +17,12 @@ This is the backend service for the Arithmetic Calculator application. It is bui
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/arithmetic-calculator-backend.git
+   git clone https://github.com/PabloGuasco-dev/Arithmetic-Calculator-Backend.git
    cd arithmetic-calculator-backend
 
 
 ## Install the dependencies
     npm install
-
-    This command will execute the tests using Jest and output the results to the console.
-
 
 ## Start the server
 
