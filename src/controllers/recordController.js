@@ -8,24 +8,31 @@ exports.getRecords = async (req, res) => {
   const skip = (pageInt - 1) * perPageInt;
 
   try {
-    const query = {
+    let query = {
       user_id: userId,
       deleted: false,
-      ...(search && { $or: [
-        { operation_id: { $regex: search, $options: 'i' } },
-        { amount: { $regex: search, $options: 'i' } },
-        { user_balance: { $regex: search, $options: 'i' } },
-        { operation_response: { $regex: search, $options: 'i' } },
-        { date: { $regex: search, $options: 'i' } }
-      ]})
     };
 
+    if (search) {
+      query = {
+        ...query,
+        $or: [
+          { amount: { $regex: search, $options: 'i' } },
+          { user_balance: { $regex: search, $options: 'i' } },
+          { operation_response: { $regex: search, $options: 'i' } },
+          { date: { $regex: search, $options: 'i' } },
+        ],
+      };
+    }
+
     const records = await Record.find(query)
+      .populate('operation_id', 'type') // Populate the operation_id with only the type field
       .skip(skip)
       .limit(perPageInt);
 
     res.status(200).json({ records });
   } catch (error) {
+    console.error('Error fetching records:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
@@ -39,6 +46,7 @@ exports.deleteRecord = async (req, res) => {
 
     res.status(200).json({ message: 'Record deleted' });
   } catch (error) {
+    console.error('Error deleting record:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
