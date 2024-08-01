@@ -18,15 +18,15 @@ exports.getRecords = async (req, res) => {
         ...query,
         $or: [
           { amount: { $regex: search, $options: 'i' } },
-          { user_balance: { $regex: search, $options: 'i' } },
+
+          { user_balance: { $regex: new RegExp(search, 'i') } },
           { operation_response: { $regex: search, $options: 'i' } },
-          { date: { $regex: search, $options: 'i' } },
         ],
       };
     }
 
     const records = await Record.find(query)
-      .populate('operation_id', 'type') // Populate the operation_id with only the type field
+      .populate('operation_id', 'type')
       .skip(skip)
       .limit(perPageInt);
 
